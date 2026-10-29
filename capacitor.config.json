@@ -1,0 +1,14 @@
+{
+  "appId": "com.baselinebook.tennischart",
+  "appName": "TennisChart",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#f4f6f9",
+    "preferredContentMode": "mobile"
+  },
+  "plugins": {
+    "SplashScreen": { "launchShowDuration": 800, "backgroundColor": "#1a56a0", "launchAutoHide": true },
+    "StatusBar": { "style": "DEFAULT" }
+  }
+}
