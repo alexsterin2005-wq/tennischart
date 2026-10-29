@@ -29,8 +29,9 @@ workflows:
       - name: Set build number
         script: |
           cd ios/App
-          BUILD_NUMBER=$(($(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0) + 1))
-          agvtool new-version -all $BUILD_NUMBER
+          LATEST=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || true)
+          case "$LATEST" in ''|*[!0-9]*) LATEST=0;; esac
+          agvtool new-version -all $((LATEST + 1))
       - name: Build IPA
         script: |
           xcode-project build-ipa \
