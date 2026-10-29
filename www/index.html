@@ -82,10 +82,10 @@ h2{font-size:22px}
 .seg button{flex:1;min-height:40px;border-radius:8px;font-weight:600}
 .seg button[aria-pressed="true"]{background:var(--court);color:#fff}
 /* Scoreboard */
-.board{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px;display:grid;grid-template-columns:1fr auto 1fr;gap:2px 10px;align-items:center;cursor:pointer}
+.board{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:2px 10px;align-items:center;cursor:pointer}
 .board.flash{box-shadow:0 0 0 3px var(--ball);transition:box-shadow .08s}
 .board{transition:box-shadow .5s}
-.board .who{font-family:var(--display);font-size:22px;font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:8px;min-width:0;position:relative}
+.board .who{font-family:var(--display);font-size:clamp(15px,5.2vw,22px);font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:8px;min-width:0;position:relative}
 .board .who.right{justify-content:flex-end;flex-direction:row-reverse}
 .board .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.1}
 .board .ball{width:22px;height:22px;border-radius:50%;background:var(--ball);flex:none;box-shadow:inset -3px -3px 0 rgba(0,0,0,.12);visibility:hidden}
@@ -116,7 +116,7 @@ h2{font-size:22px}
 .stage .servelabel{padding-top:6px}
 .stage>.row,.stage>.big-chips{flex:1;min-height:0;max-height:52vh}
 .stage>.row .big{height:100%;font-size:34px}
-.stage>.row.how .big{font-size:24px}
+.stage>.row.how .big{font-size:clamp(14px,4.3vw,19px)}
 .stage>.big-chips{align-content:stretch}
 .stage>.big-chips button{flex:1 1 30%;min-height:0;height:auto}
 .stage>.big-chips button.skip{flex:1 1 100%;max-height:52px}
@@ -128,7 +128,7 @@ h2{font-size:22px}
 .chips button[aria-pressed="true"]{background:var(--court);color:#fff;border-color:var(--court)}
 .big-chips button{min-height:60px;flex:1 1 30%;font-family:var(--display);font-size:22px;text-transform:uppercase;letter-spacing:.03em;border-radius:14px;background:var(--surface)}
 .big-chips button.skip{flex:1 1 100%;background:transparent;color:var(--muted);font-family:var(--body);font-size:16px;text-transform:none;min-height:48px;border-style:dashed}
-.row.how .big{font-size:20px;line-height:1.05;padding:0 6px}
+.row.how .big{font-size:clamp(14px,4.3vw,19px);line-height:1.05;padding:0 4px;letter-spacing:0}
 .editbar{display:flex;gap:8px;padding-bottom:env(safe-area-inset-bottom,0px)}
 .editbar button{flex:1;min-height:54px;border-radius:12px;background:var(--surface);border:1.5px solid var(--line);font-weight:600;font-size:15px}
 .editbar button.end{flex:.6;color:var(--muted)}
@@ -157,23 +157,23 @@ h2{font-size:22px}
 .tabs button{flex:1;min-height:40px;border-radius:8px;font-weight:600}
 .tabs button[aria-pressed="true"]{background:var(--court);color:#fff}
 .stats{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
-.stats .head{display:grid;grid-template-columns:1fr 110px 1fr;align-items:center;padding:12px;gap:6px;font-size:17px}
+.stats .head{display:grid;grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr);align-items:center;padding:12px;gap:6px;font-size:17px}
 .stats .head .nm{display:flex;align-items:center;gap:8px;font-weight:600;min-width:0}
 .stats .head .nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stats .head .nm.r{justify-content:flex-end}
 .av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;color:#fff;flex:none}
 .av.p1{background:var(--me);color:#0b1526} .av.p2{background:var(--opp);color:var(--opp-ink)}
 .stats .sec{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:10px 12px;background:var(--court);color:#fff;font-family:var(--display);font-size:18px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:8px}
-.stats .sec .n{font-family:var(--body);font-size:12px;font-weight:700;letter-spacing:.06em;opacity:.9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stats .sec .n{font-family:var(--body);font-size:11px;min-width:0;font-weight:700;letter-spacing:.06em;opacity:.9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stats .sec .n.r{text-align:right}
-.srow{display:grid;grid-template-columns:1fr 110px 1fr;align-items:center;min-height:46px;border-top:1px solid var(--line)}
-.srow .v{display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:15px;font-variant-numeric:tabular-nums;font-weight:600;min-width:0}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr);align-items:center;min-height:46px;border-top:1px solid var(--line)}
+.srow .v{display:flex;align-items:center;gap:6px;padding:6px 6px;font-size:13px;font-variant-numeric:tabular-nums;font-weight:600;min-width:0}
 .srow .v.l{flex-direction:row;}
 .srow .v.r{flex-direction:row-reverse}
-.srow .v .num{flex:none;width:84px;white-space:nowrap}
+.srow .v .num{flex:none;width:auto;min-width:56px;white-space:nowrap;font-size:13px}
 .srow .v.l .num{text-align:left}
 .srow .v.r .num{text-align:right}
-.srow .bar{flex:1;height:12px;background:var(--line);border-radius:4px;overflow:hidden;position:relative}
+.srow .bar{flex:1;min-width:24px;height:12px;background:var(--line);border-radius:4px;overflow:hidden;position:relative}
 .srow .bar i{position:absolute;top:0;bottom:0;display:block;border-radius:4px}
 .srow .v.l .bar i{right:0;background:var(--me)}
 .srow .v.r .bar i{left:0;background:var(--opp)}
@@ -692,7 +692,7 @@ function editPoint(i,row){
 
 /* ---- Summary ---- */
 function elapsed(ts){ const m=Math.max(0,Math.round((ts-match.createdAt)/60000)); return m<60?`${m} min in`:`${Math.floor(m/60)}h ${m%60}m in`; }
-function pct(a){ return a[1]?`${a[0]}/${a[1]} (${Math.round(100*a[0]/a[1])}%)`:`0`; }
+function pct(a){ return a[1]?`${Math.round(100*a[0]/a[1])}% <small style="opacity:.75">${a[0]}/${a[1]}</small>`:`0`; }
 function openSummary(){ ui.tab=null; show("s-summary"); renderSummary(); }
 function renderSummary(){
   const st=compute(match);
