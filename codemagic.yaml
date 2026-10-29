@@ -10,20 +10,19 @@ workflows:
         distribution_type: app_store
         bundle_identifier: com.baselinebook.tennischart
       vars:
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
         XCODE_SCHEME: "App"
         APP_STORE_APPLE_ID: 6828280095
       node: 22
       xcode: latest
-      cocoapods: default
     scripts:
       - name: Install dependencies and sync web build
         script: |
           npm ci --no-audit --no-fund
           npx cap sync ios
-      - name: Install CocoaPods
+      - name: Resolve Swift packages
         script: |
-          cd ios/App && pod install
+          cd ios/App && xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App
       - name: Set up code signing
         script: |
           xcode-project use-profiles
@@ -35,7 +34,7 @@ workflows:
       - name: Build IPA
         script: |
           xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
+            --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME"
     artifacts:
       - build/ios/ipa/*.ipa
