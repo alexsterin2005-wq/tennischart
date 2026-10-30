@@ -23,7 +23,7 @@ const WP = {
   utrScale: 2,        // Win% = 1 / (1 + 10^(-gap/utrScale))
   gapCap: 2.5,        // |gap| clamped to this
   baseServe: 0.60,    // generic junior serve-point win rate
-  priorWeight: 40,    // UTR guess counts as this many serve points
+  priorWeight: 80,    // UTR guess counts as this many serve points (backtested: best of 20–160)
 };
 ```
 
@@ -54,7 +54,7 @@ Alex UTR 9.0 vs Aaron 8.5, ad, 10-pt MTB, Alex serves first, no blend (0 points 
 | Set 1 4-4, Aaron serving, Alex up 40-30 (BP) | 0.693 |
 | → 5-4, Alex to serve | 0.781 |
 | → deuce, Aaron serving | 0.631 |
-Blend check: 40 Alex serve points, 20 won → p1Serve = 0.558.
+Blend check (priorWeight 80): 40 Alex serve points, 20 won → p1Serve = 0.578.
 
 ## UI
 - Setup screen: two optional UTR inputs (decimal keypad), under the names.
@@ -85,3 +85,17 @@ Blend check: 40 Alex serve points, 20 won → p1Serve = 0.558.
 
 ## Calibration (later)
 Store `{gap, p1Serve0, final winner, per-point p1Win}` per finished match (local only until a backend exists). After 50+ matches, refit `utrScale`, `baseServe`, `priorWeight` by minimizing log loss on final outcomes. Brier score target < 0.20.
+
+## Backtest (2026-10-30)
+Data: Match Charting Project (Jeff Sackmann), 2020s best-of-three, 982 men's + 988 women's matches, 274,974 points. No ratings → all matches start 50/50 (tests Steps 3–4 only). Code: `docs/backtest/`.
+
+| priorWeight | Men Brier | Women Brier |
+|---|---|---|
+| none (no learning) | 0.1725 | 0.1694 |
+| 20 | 0.1737 | 0.1670 |
+| 40 | 0.1681 | 0.1619 |
+| 60 | 0.1664 | 0.1604 |
+| **80** | **0.1659** | **0.1601** |
+| 120 | 0.1661 | 0.1604 |
+
+Calibration at 80: actual win rate within ~1–3 pts of predicted in every 10% bucket; consistent ~2 pt under-prediction for Player 1 (P1 wins 51–54% in this dataset) = the missing pre-match rating. Pro serve-point rates: men 0.645, women 0.572 → split `baseServe` by gender once junior data exists.
