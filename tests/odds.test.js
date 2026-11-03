@@ -6,6 +6,8 @@ const pt=(m,w)=>{ m.events.push({type:'serve_in'},{type:'point',winner:w,how:'wi
 const hold=(m)=>{ const s=E.compute(m).curServer; for(let i=0;i<4;i++) pt(m,s); };
 const wp=(m,blend)=>E.winProb(m,E.compute(m),{blend});
 
+// Spec reference numbers were worked out with the original curve (setting 2.0); pin it for the math checks
+E.WP.utrScale=2;
 // Step 1-2: starting odds and serve numbers
 let m=mk('p1',9.0,8.5); const s0=E.startingServe(m);
 near('Start, UTR 9.0 vs 8.5', wp(m,false), 0.640, 0.003);
@@ -26,10 +28,15 @@ let c2=JSON.parse(JSON.stringify(c)); pt(c2,'p2'); near('Aaron saves -> deuce', 
 // Edge cases
 near('No UTRs -> 50/50', wp(mk('p1',null,null),true), 0.5, 0.0001);
 near('One UTR -> 50/50', wp(mk('p1',9,null),true), 0.5, 0.0001);
-near('Gap 4.0 capped at 2.5', wp(mk('p1',12,8),false), 1/(1+Math.pow(10,-1.25)), 0.003);
+near('Gap 4.0 capped at 2.5', wp(mk('p1',12,8),false), 1/(1+Math.pow(10,-2.5/E.WP.utrScale)), 0.003);
 for(const cfg of [{scoring:'no_ad'},{thirdSet:'full_set'},{scoring:'no_ad',thirdSet:'full_set'}]){ near('Start target holds for '+JSON.stringify(cfg), wp(mk('p1',9.0,8.5,cfg),false), 0.640, 0.003); }
 // Symmetry: swap players -> 1-p
 { const x=mk('p1',9,8.5), y=mk('p2',8.5,9); near('Symmetry', wp(x,false), 1-wp(y,false), 0.002); }
+// Live setting 1.5 (fit to 148 Kalshi ITF/pro prices, Nov 3 2026)
+E.WP.utrScale=1.5;
+near('Setting 1.5: 10.65 vs 10.25', wp(mk('p1',10.65,10.25),false), 0.649, 0.003);
+near('Setting 1.5: 9.0 vs 8.5', wp(mk('p1',9.0,8.5),false), 0.682, 0.003);
+near('Setting 1.5: 1.0 gap', wp(mk('p1',11,10),false), 0.823, 0.003);
 // Monotonic + terminal on 300 synthetic matches
 const make=require('./gen'); const ms=make(120,E); let mono=0, term=0, n=0, nan=0;
 for(const mm of ms){ mm.p1Utr=8+Math.random()*3; mm.p2Utr=8+Math.random()*3;

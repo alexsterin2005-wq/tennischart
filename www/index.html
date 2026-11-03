@@ -478,7 +478,7 @@ function computeStats(match, st, setFilter){
 }
 
 /* ================= WINPROB (reads engine state only; never changes it) ================= */
-const WP = { utrScale: 2, gapCap: 2.5, baseServe: 0.60, priorWeight: 80 };
+const WP = { utrScale: 1.5, gapCap: 2.5, baseServe: 0.60, priorWeight: 80 };
 function wpOther(p){ return p==="p1"?"p2":"p1"; }
 function wpModel(pa, pb, cfg){
   // pa = chance p1 wins a point on p1's serve, pb = chance p2 wins a point on p2's serve
@@ -554,7 +554,7 @@ function wpUtr(v){ const n=parseFloat(v); return (isFinite(n)&&n>=1&&n<=16.5) ? 
 const wpStartCache = new Map();
 function startingServe(match){
   const u1=wpUtr(match.p1Utr), u2=wpUtr(match.p2Utr), cfg=match.config;
-  const key=[u1,u2,cfg.scoring,cfg.thirdSet,cfg.firstServer].join("|");
+  const key=[u1,u2,cfg.scoring,cfg.thirdSet,cfg.firstServer,WP.utrScale].join("|");
   if(wpStartCache.has(key)) return wpStartCache.get(key);
   let res;
   if(u1===null||u2===null){ res={pa:WP.baseServe,pb:WP.baseServe,target:0.5,hasUtr:false}; }
