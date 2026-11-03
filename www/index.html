@@ -168,7 +168,8 @@ h2{font-size:24px}
 .stage>.big-chips button.skip{flex:1 1 100%;max-height:52px}
 .stage>#go-summary{flex:1;max-height:30vh}
 .servelabel{font-family:var(--display);font-size:26px;font-weight:800;text-transform:uppercase;text-align:center;letter-spacing:.05em}
-.servelabel.second{color:var(--warn)}
+.servelabel.second .sv{color:var(--warn)}
+.pc.p1{color:var(--me)} .pc.p2{color:var(--opp)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .chips button{min-height:44px;padding:0 14px;border-radius:999px;background:var(--surface);border:1.5px solid var(--line);font-weight:600}
 .chips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -763,13 +764,13 @@ function render(){
   $("btn-undo").disabled = match.events.length===0;
   const stage=$("stage"); let hint="";
   if (st.over){
-    stage.innerHTML=`<div class="servelabel">Game, set, match<br>${esc(name(st.winner))}</div><button class="big primary" id="go-summary">See stats</button>`;
+    stage.innerHTML=`<div class="servelabel">Game, set, match<br><span class="pc ${st.winner}">${esc(name(st.winner))}</span></div><button class="big primary" id="go-summary">See stats</button>`;
     stage.querySelector("#go-summary").onclick=()=>openSummary();
   } else if (ui.step==="shot" || ui.step==="rally"){
     const lp=st.points[st.points.length-1];
     const who = lp ? name(lp.how==="winner"?lp.winner:other(lp.winner)) : "";
     if (ui.step==="shot"){
-      stage.innerHTML=`<div class="servelabel">${esc(who)} · ${lp?HOWLABEL[lp.how].toLowerCase():""}. Which shot?</div><div class="chips big-chips" id="chips"></div>`;
+      stage.innerHTML=`<div class="servelabel"><span class="pc ${lp?(lp.how==="winner"?lp.winner:other(lp.winner)):""}">${esc(who)}</span> · ${lp?HOWLABEL[lp.how].toLowerCase():""}. Which shot?</div><div class="chips big-chips" id="chips"></div>`;
       const c=stage.querySelector("#chips");
       const hitter = lp ? (lp.how==="winner"?lp.winner:other(lp.winner)) : null;
       const hitterServed = lp && hitter===lp.server;
@@ -787,7 +788,7 @@ function render(){
   } else if (!st.awaiting){
     ui.step="serve";
     const s=st.curServer;
-    stage.innerHTML=`<div class="servelabel ${st.serveNum===2?"second":""}">${st.serveNum===1?"1st serve":"2nd serve"} · ${esc(name(s))}</div>
+    stage.innerHTML=`<div class="servelabel ${st.serveNum===2?"second":""}"><span class="sv">${st.serveNum===1?"1st serve":"2nd serve"}</span> · <span class="pc ${s}">${esc(name(s))}</span></div>
       <div class="row"><button class="big primary" id="sv-in">In</button><button class="big action" id="sv-fault">Fault</button></div>`;
     stage.querySelector("#sv-in").onclick=()=>{ push({type:"serve_in"}); render(); };
     stage.querySelector("#sv-fault").onclick=()=>{ push({type:"serve_fault"}); render(); };
@@ -802,7 +803,7 @@ function render(){
     stage.querySelector("#w-p2").onclick=()=>{ui.pendingWinner="p2";ui.step="how";render();};
   } else if (ui.step==="how"){
     const w=ui.pendingWinner, l=other(w);
-    stage.innerHTML=`<div class="servelabel">${esc(name(w))} won. How?</div>
+    stage.innerHTML=`<div class="servelabel"><span class="pc ${w}">${esc(name(w))}</span> won. How?</div>
       <div class="row how"><button class="big action" id="h-winner">Winner</button>
       <button class="big action" id="h-fe">Forced<br>error</button>
       <button class="big action" id="h-ue">Unforced<br>error</button></div>
