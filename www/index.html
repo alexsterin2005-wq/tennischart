@@ -458,6 +458,123 @@ function computeStats(match, st, setFilter){
   return S;
 }
 
+/* ================= WINPROB (reads engine state only; never changes it) ================= */
+const WP = { utrScale: 2, gapCap: 2.5, baseServe: 0.60, priorWeight: 80 };
+function wpOther(p){ return p==="p1"?"p2":"p1"; }
+function wpModel(pa, pb, cfg){
+  // pa = chance p1 wins a point on p1's serve, pb = chance p2 wins a point on p2's serve
+  const noad = cfg.scoring==="no_ad";
+  const mh={}, mt={}, ms={}, mm={};
+  function hold(p,a,b){
+    const k=p+"|"+a+"|"+b; if(k in mh) return mh[k];
+    let r;
+    if(noad){ if(a>=4) r=1; else if(b>=4) r=0; else if(a===3&&b===3) r=p; }
+    if(r===undefined){
+      if(a>=4&&a-b>=2) r=1; else if(b>=4&&b-a>=2) r=0;
+      else if(a>=3&&b>=3){ const d=p*p/(p*p+(1-p)*(1-p)); r = a===b ? d : (a>b ? p+(1-p)*d : p*d); }
+      else r = p*hold(p,a+1,b)+(1-p)*hold(p,a,b+1);
+    }
+    return mh[k]=r;
+  }
+  const hA=hold(pa,0,0), hB=hold(pb,0,0);
+  function tbServer(n, first){ return n===0 ? first : (Math.floor((n-1)/2)%2===0 ? wpOther(first) : first); }
+  function tb(a,b,first,target){
+    const k=a+"|"+b+"|"+first+"|"+target; if(k in mt) return mt[k];
+    let r;
+    if(a>=target&&a-b>=2) r=1; else if(b>=target&&b-a>=2) r=0;
+    else {
+      const q = tbServer(a+b, first)==="p1" ? pa : 1-pb;
+      if(a>=target-1&&b>=target-1){
+        const w=pa*(1-pb), l=(1-pa)*pb, tie=w/(w+l);
+        r = a===b ? tie : (a>b ? q+(1-q)*tie : q*tie);
+      } else r = q*tb(a+1,b,first,target)+(1-q)*tb(a,b+1,first,target);
+    }
+    return mt[k]=r;
+  }
+  function setw(g1,g2,srv){
+    const k=g1+"|"+g2+"|"+srv; if(k in ms) return ms[k];
+    let r;
+    if((g1>=6&&g1-g2>=2)||g1>=7) r=1;
+    else if((g2>=6&&g2-g1>=2)||g2>=7) r=0;
+    else if(g1===6&&g2===6) r=tb(0,0,srv,7);
+    else { const h = srv==="p1" ? hA : 1-hB; r = h*setw(g1+1,g2,wpOther(srv))+(1-h)*setw(g1,g2+1,wpOther(srv)); }
+    return ms[k]=r;
+  }
+  function match(s1,s2){
+    if(s1>=2) return 1; if(s2>=2) return 0;
+    const k=s1+"|"+s2; if(k in mm) return mm[k];
+    const decider = s1===1&&s2===1&&cfg.thirdSet==="match_tiebreak_10";
+    const s = decider ? (tb(0,0,"p1",10)+tb(0,0,"p2",10))/2 : (setw(0,0,"p1")+setw(0,0,"p2"))/2;
+    return mm[k] = s*match(s1+1,s2)+(1-s)*match(s1,s2+1);
+  }
+  function fromStart(firstServer){ const s=setw(0,0,firstServer); return s*match(1,0)+(1-s)*match(0,1); }
+  function fromState(st){
+    if(st.over) return st.winner==="p1" ? 1 : 0;
+    const s1=st.setsWon[0], s2=st.setsWon[1];
+    let w;
+    if(st.mtb) w = tb(st.p[0],st.p[1],st.tbFirst,10);
+    else if(st.tb) w = tb(st.p[0],st.p[1],st.tbFirst,7);
+    else {
+      const srv=st.curServer, a = srv==="p1"?st.p[0]:st.p[1], b = srv==="p1"?st.p[1]:st.p[0];
+      const h = hold(srv==="p1"?pa:pb, a, b), pw = srv==="p1" ? h : 1-h;
+      w = pw*setw(st.g[0]+1,st.g[1],wpOther(srv)) + (1-pw)*setw(st.g[0],st.g[1]+1,wpOther(srv));
+    }
+    return w*match(s1+1,s2)+(1-w)*match(s1,s2+1);
+  }
+  return { fromStart, fromState };
+}
+const wpCache = new Map();
+function wpGet(pa,pb,cfg){
+  const R=20000, ra=Math.round(pa*R)/R, rb=Math.round(pb*R)/R;
+  const k=ra+"|"+rb+"|"+cfg.scoring+"|"+cfg.thirdSet;
+  let m=wpCache.get(k);
+  if(!m){ if(wpCache.size>400) wpCache.clear(); m=wpModel(ra, rb, cfg); wpCache.set(k,m); }
+  return m;
+}
+function wpUtr(v){ const n=parseFloat(v); return (isFinite(n)&&n>=1&&n<=16.5) ? n : null; }
+const wpStartCache = new Map();
+function startingServe(match){
+  const u1=wpUtr(match.p1Utr), u2=wpUtr(match.p2Utr), cfg=match.config;
+  const key=[u1,u2,cfg.scoring,cfg.thirdSet,cfg.firstServer].join("|");
+  if(wpStartCache.has(key)) return wpStartCache.get(key);
+  let res;
+  if(u1===null||u2===null){ res={pa:WP.baseServe,pb:WP.baseServe,target:0.5,hasUtr:false}; }
+  else {
+    const gap=Math.max(-WP.gapCap,Math.min(WP.gapCap,u1-u2));
+    const target=1/(1+Math.pow(10,-gap/WP.utrScale));
+    let lo=-0.4, hi=0.4;
+    for(let i=0;i<40;i++){ const e=(lo+hi)/2; const v=wpModel(WP.baseServe+e/2,WP.baseServe-e/2,cfg).fromStart(cfg.firstServer); if(v>target) hi=e; else lo=e; }
+    const e=(lo+hi)/2;
+    res={pa:WP.baseServe+e/2,pb:WP.baseServe-e/2,target,hasUtr:true};
+  }
+  wpStartCache.set(key,res); return res;
+}
+function winProb(match, st, opts){
+  // chance that p1 wins the match from the current state (0..1)
+  const s0=startingServe(match);
+  let pa=s0.pa, pb=s0.pb;
+  if(!(opts&&opts.blend===false)){
+    let w1=0,n1=0,w2=0,n2=0;
+    for(const p of st.points){ if(p.server==="p1"){ n1++; if(p.winner==="p1") w1++; } else { n2++; if(p.winner==="p2") w2++; } }
+    pa=(WP.priorWeight*s0.pa+w1)/(WP.priorWeight+n1);
+    pb=(WP.priorWeight*s0.pb+w2)/(WP.priorWeight+n2);
+  }
+  pa=Math.min(0.9,Math.max(0.3,pa)); pb=Math.min(0.9,Math.max(0.3,pb));
+  return wpGet(pa,pb,match.config).fromState(st);
+}
+function winProbSeries(match){
+  // p1 win chance before the first point and after every finished point
+  const out=[]; const m={...match, events:[]}; let last=-1;
+  out.push({i:0, p:winProb(match, compute(m))});
+  for(const e of match.events){
+    m.events.push(e);
+    if(e.type!=="point" && e.type!=="serve_fault" && e.type!=="fix_score") continue;
+    const st=compute(m);
+    if(st.points.length!==last){ last=st.points.length; out.push({i:st.points.length, p:winProb(match, st), set:st.over?st.sets.length-1:st.setIdx}); }
+  }
+  return out;
+}
+/* ================= END WINPROB ================= */
 /* ================= APP STATE ================= */
 let match=null, ui={step:"serve", pendingWinner:null, chips:false, hintsSeen:{}, tab:null, expand:{}};
 const $=id=>document.getElementById(id);

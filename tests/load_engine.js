@@ -2,7 +2,7 @@
 const fs = require('fs'), path = require('path');
 module.exports = function loadEngine(file) {
   const src = fs.readFileSync(file || path.join(__dirname, '..', 'www', 'index.html'), 'utf8');
-  const a = src.indexOf('/* ================= ENGINE'), b = src.indexOf('/* ================= APP STATE');
+  const a = src.indexOf('/* ================= ENGINE'); let b = src.indexOf('/* ================= WINPROB'); if (b < 0) b = src.indexOf('/* ================= APP STATE');
   if (a < 0 || b < 0) throw new Error('engine markers not found');
   let extra = '';
   const c = src.indexOf('/* ================= WINPROB'), d = src.indexOf('/* ================= END WINPROB');
