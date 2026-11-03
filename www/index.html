@@ -20,15 +20,15 @@ img{max-width:100%}
 /* Layout: one-screen app, stages swap in the same area; scoreboard pinned at top, edit bar pinned at bottom. */
 :root{
   --bg:#f4f6f9; --surface:#ffffff; --fg:#0b1526; --muted:#3f4b61; --line:#b8c2d1;
-  --court:#1a56a0; --court-deep:#163f6e; --ball:#b9d52a; --me:#4fa81f; --opp:#3a86d6; --opp-ink:#ffffff; --warn:#a6420a;
+  --court:#1a56a0; --court-deep:#163f6e; --ball:#b9d52a; --me:#4fa81f; --opp:#3a86d6; --opp-ink:#ffffff; --warn:#a6420a; --good:#15803d; --bad:#c62828;
   --good:#1e7f4f; --display:"Barlow Condensed",Impact,"Arial Narrow",sans-serif; --body:"Barlow",system-ui,-apple-system,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not(.sun){
   --bg:#0c1322; --surface:#182439; --fg:#f6f8fc; --muted:#c3cddd; --line:#3b4c6b;
-  --court:#5a9cf0; --court-deep:#2b5a9a; --ball:#e2f55a; --me:#c9ef6a; --opp:#74b9ff; --opp-ink:#0b1526; --warn:#ffb067; --good:#6fe0a0; color-scheme:dark}}
+  --court:#5a9cf0; --court-deep:#2b5a9a; --ball:#e2f55a; --me:#c9ef6a; --opp:#74b9ff; --opp-ink:#0b1526; --warn:#ffb067; --good:#6fe0a0; --bad:#ff6b6b; color-scheme:dark}}
 :root.sun, :root.sun[data-theme="dark"]{
   --bg:#ffffff; --surface:#ffffff; --fg:#000000; --muted:#1f2937; --line:#6b7280;
-  --court:#0b3f80; --court-deep:#082b58; --ball:#d4ea00; --me:#2e7d0f; --opp:#0b5fb8; --opp-ink:#ffffff; --warn:#8a3200; --good:#1e7f4f; color-scheme:light}
+  --court:#0b3f80; --court-deep:#082b58; --ball:#d4ea00; --me:#2e7d0f; --opp:#0b5fb8; --opp-ink:#ffffff; --warn:#8a3200; --good:#1e7f4f; --bad:#b00020; color-scheme:light}
 :root.sun .board,:root.sun .editbar button,:root.sun .action,:root.sun .ghost,:root.sun .format,:root.sun .stats{border-width:2.5px}
 :root.sun .srow{border-top-width:2px}
 :root.sun .srow .bar{background:#cfd6e0;border:1px solid #6b7280}
@@ -37,7 +37,7 @@ img{max-width:100%}
 :root.sun .tabs,:root.sun .seg{border:2px solid #6b7280}
 :root[data-theme="dark"]:not(.sun){
   --bg:#0c1322; --surface:#182439; --fg:#f6f8fc; --muted:#c3cddd; --line:#3b4c6b;
-  --court:#5a9cf0; --court-deep:#2b5a9a; --ball:#e2f55a; --me:#c9ef6a; --opp:#74b9ff; --opp-ink:#0b1526; --warn:#ffb067; --good:#6fe0a0; color-scheme:dark}
+  --court:#5a9cf0; --court-deep:#2b5a9a; --ball:#e2f55a; --me:#c9ef6a; --opp:#74b9ff; --opp-ink:#0b1526; --warn:#ffb067; --good:#6fe0a0; --bad:#ff6b6b; color-scheme:dark}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.35}
 *{box-sizing:border-box}
@@ -88,15 +88,28 @@ h2{font-size:22px}
 .board .who{font-family:var(--display);font-size:clamp(15px,5.2vw,22px);font-weight:700;text-transform:uppercase;display:flex;align-items:center;gap:8px;min-width:0;position:relative}
 .board .who.right{justify-content:flex-end;flex-direction:row-reverse}
 .board .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.1}
-.board .ball{width:22px;height:22px;border-radius:50%;background:var(--ball);flex:none;box-shadow:inset -3px -3px 0 rgba(0,0,0,.12);visibility:hidden}
+.board .ball{width:18px;height:18px;border-radius:50%;background:var(--ball);flex:none;box-shadow:inset -3px -3px 0 rgba(0,0,0,.12);visibility:hidden}
 .board .who.serving .ball{visibility:visible}
+.board .odds{font-family:var(--display);font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;padding:1px 9px;border-radius:999px;border:1.5px solid currentColor;line-height:1.2;transition:color .35s;letter-spacing:.01em;margin:2px 0}
+.board .odds.ol{justify-self:start;margin-left:30px}
+.board .odds.or{justify-self:end;margin-right:30px}
+.board .odds.lead{color:var(--good)}
+.board .odds.trail{color:var(--bad)}
+.board .odds.even{color:var(--muted)}
+.board .odds.bump{animation:oddsbump .5s ease-out}
+@keyframes oddsbump{0%{transform:scale(1.25)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.board .odds.bump{animation:none}}
+.namerow{display:flex;gap:8px}
+.namerow input:first-child{flex:1;min-width:0}
+.court input.utr{width:78px;flex:none;text-align:center}
+.court .fine{font-size:13px;opacity:.85;margin:2px 0 0}
 .board .who.won span,.board .pt.won{animation:won .6s ease-out}
 @keyframes won{0%{transform:scale(1.18);filter:brightness(1.6)}100%{transform:scale(1);filter:none}}
 .board .pt.won{color:var(--me)}
 .board .pt.r.won{color:var(--opp)}
 @media (prefers-reduced-motion:reduce){.board .who.won span,.board .pt.won{animation:none}}
 .board .sets{font-family:var(--display);font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;text-align:center;line-height:1}
-.board small{display:block;font-size:12px;font-family:var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600;text-align:center}
+.board small{display:block;font-size:11px;font-family:var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;text-align:center;max-width:78px;line-height:1.2}
 .board .games,.board .pt{font-family:var(--display);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;color:var(--fg)}
 .board .games{font-size:44px}
 .board .pt{font-size:64px;letter-spacing:.02em}
@@ -203,14 +216,15 @@ textarea#report{width:100%;min-height:160px;font:13px/1.4 ui-monospace,Menlo,mon
   <div class="court" aria-label="Court">
     <div class="side">
       <label for="p2name">Opponent</label>
-      <input id="p2name" placeholder="Opponent name" autocomplete="off">
+      <div class="namerow"><input id="p2name" placeholder="Opponent name" autocomplete="off"><input id="p2utr" class="utr" placeholder="UTR" inputmode="decimal" autocomplete="off" aria-label="Opponent UTR, optional"></div>
     </div>
     <div class="net"></div>
     <div class="side">
       <label for="p1name">Your player</label>
-      <input id="p1name" placeholder="Your player's name" autocomplete="off">
+      <div class="namerow"><input id="p1name" placeholder="Your player's name" autocomplete="off"><input id="p1utr" class="utr" placeholder="UTR" inputmode="decimal" autocomplete="off" aria-label="Your player UTR, optional"></div>
       <button id="p1last" class="chips" hidden style="align-self:flex-start;background:rgba(255,255,255,.2);color:#fff;border-radius:999px;padding:6px 12px;font-weight:600;font-size:14px"></button>
     </div>
+    <p class="fine">UTR is optional. Add both for live win odds that start from the ratings.</p>
   </div>
   <button class="big primary" id="btn-start">Start match</button>
   <button id="btn-restore" class="big ghost" hidden style="font-size:17px;min-height:50px">↩ Reopen last match</button>
@@ -224,6 +238,10 @@ textarea#report{width:100%;min-height:160px;font:13px/1.4 ui-monospace,Menlo,mon
       <button id="f-mtb" aria-pressed="true">10-pt match tiebreak</button>
       <button id="f-full" aria-pressed="false">Full third set</button>
     </div>
+    <div class="seg" role="group" aria-label="Live win odds">
+      <button id="f-oddson" aria-pressed="true">Live odds on</button>
+      <button id="f-oddsoff" aria-pressed="false">Live odds off</button>
+    </div>
   </div>
 </section>
 
@@ -233,6 +251,7 @@ textarea#report{width:100%;min-height:160px;font:13px/1.4 ui-monospace,Menlo,mon
     <div class="who left serving" id="b-p1" style="color:var(--me)"><i class="ball"></i><span id="b-p1n"></span></div>
     <div class="sets"><small>Sets</small><span id="b-sets">0–0</span></div>
     <div class="who right" id="b-p2" style="color:var(--opp)"><i class="ball"></i><span id="b-p2n"></span></div>
+    <b class="odds ol" id="b-o1" hidden></b><small class="mid" id="b-olabel" hidden>To win</small><b class="odds or" id="b-o2" hidden></b>
     <b class="games l" id="b-g1">0</b><small class="mid" id="b-setlabel">Set 1 · Games</small><b class="games r" id="b-g2">0</b>
     <b class="pt l" id="b-pt1">0</b><small class="mid" id="b-ptslabel">Points</small><b class="pt r" id="b-pt2">0</b>
     <span class="bigpt" id="b-bigpt" hidden></span>
@@ -607,6 +626,44 @@ function show(id){ ["s-setup","s-live","s-summary"].forEach(s=>$(s).hidden=(s!==
 function hintOnce(key){ if(ui.hintsSeen[key]) return ""; return HINTS[key]||""; }
 function markHint(key){ if(!ui.hintsSeen[key]){ ui.hintsSeen[key]=true; save(); } }
 
+function fitName(el){
+  // shrink a scoreboard name until it fits its column (min 13px), then ellipsis
+  let size=22; el.style.fontSize=size+"px";
+  while(size>13 && el.scrollWidth>el.clientWidth){ size--; el.style.fontSize=size+"px"; }
+}
+/* ---- Live odds UI (any error hides the odds; scoring is never affected) ---- */
+let oddsPref = (()=>{ try{ return localStorage.getItem("mc_odds")!=="0"; }catch(e){ return true; } })();
+function oddsOn(){ return oddsPref; }
+function setOddsPref(on){ oddsPref=on; try{ localStorage.setItem("mc_odds", on?"1":"0"); }catch(e){} $("f-oddson").setAttribute("aria-pressed",String(on)); $("f-oddsoff").setAttribute("aria-pressed",String(!on)); }
+$("f-oddson").onclick=()=>setOddsPref(true); $("f-oddsoff").onclick=()=>setOddsPref(false); setOddsPref(oddsOn());
+const reduceMotion = (()=>{ try{ return matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } })();
+function setOdds(el, val, cls, who){
+  const prev = el.dataset.v===undefined ? null : +el.dataset.v;
+  el.className = "odds " + (el.id==="b-o1" ? "ol " : "or ") + cls;
+  el.setAttribute("aria-label", `${who} ${val}% to win`);
+  el.dataset.v = val;
+  if(prev===null || prev===val || reduceMotion){ el.textContent = val+"%"; return; }
+  el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump");
+  const t0=performance.now(), dur=450, from=prev;
+  cancelAnimationFrame(el._raf);
+  const step=t=>{ const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3); el.textContent=Math.round(from+(val-from)*e)+"%"; if(k<1) el._raf=requestAnimationFrame(step); };
+  el._raf=requestAnimationFrame(step);
+}
+function renderOdds(st){
+  const o1=$("b-o1"), o2=$("b-o2");
+  try{
+    const lab=$("b-olabel");
+    if(!oddsOn()){ o1.hidden=o2.hidden=lab.hidden=true; return; }
+    let a=Math.round(winProb(match, st)*100);
+    if(!st.over) a=Math.min(99,Math.max(1,a));
+    const b=100-a;
+    o1.hidden=o2.hidden=lab.hidden=false;
+    setOdds(o1, a, a>b?"lead":a<b?"trail":"even", match.p1Name);
+    setOdds(o2, b, b>a?"lead":b<a?"trail":"even", match.p2Name);
+  }catch(e){ o1.hidden=o2.hidden=true; const l=$("b-olabel"); if(l) l.hidden=true; }
+}
+$("p1last").addEventListener("click", ()=>{ try{ const u=localStorage.getItem("mc_lastp1utr"); if(u) $("p1utr").value=u; }catch(e){} });
+
 /* ---- Setup ---- */
 let fmt={scoring:"ad",thirdSet:"match_tiebreak_10"};
 function seg(a,b,key,va,vb){ $(a).onclick=()=>{fmt[key]=va;$(a).setAttribute("aria-pressed","true");$(b).setAttribute("aria-pressed","false");}; $(b).onclick=()=>{fmt[key]=vb;$(b).setAttribute("aria-pressed","true");$(a).setAttribute("aria-pressed","false");}; }
@@ -623,6 +680,8 @@ $("btn-start").onclick=()=>{
 };
 function startMatch(p1,p2,first){
   match={id:uid(), createdAt:Date.now(), p1Name:p1, p2Name:p2, config:{scoring:fmt.scoring, thirdSet:fmt.thirdSet, firstServer:first}, events:[]};
+  { const u1=wpUtr($("p1utr").value), u2=wpUtr($("p2utr").value); if(u1!==null) match.p1Utr=u1; if(u2!==null) match.p2Utr=u2;
+    try{ if(u1!==null) localStorage.setItem("mc_lastp1utr", String(u1)); }catch(e){} }
   ui.step="serve"; ui.chips=false; closeSheet(); save(); show("s-live"); render();
 }
 
@@ -637,6 +696,8 @@ function render(){
   if(!match) return;
   const st=compute(match);
   $("b-p1n").textContent=match.p1Name; $("b-p2n").textContent=match.p2Name;
+  fitName($("b-p1n")); fitName($("b-p2n"));
+  renderOdds(st);
   $("b-p1").classList.toggle("serving",st.curServer==="p1"); $("b-p2").classList.toggle("serving",st.curServer==="p2");
   $("b-sets").textContent=`${st.setsWon[0]}–${st.setsWon[1]}`;
   $("b-g1").textContent=st.g[0]; $("b-g2").textContent=st.g[1];
@@ -1022,7 +1083,7 @@ $("btn-image").onclick=()=>{
   }catch(x){ showFallback(); }
 };
 $("btn-new").onclick=()=>{
-  sheet(`<h2>Start a new match?</h2><p style="margin:0;color:var(--muted)">This match is not saved. Copy the report first if you need it.</p><button class="big primary" id="new-yes">New match</button>`, el=>{ el.querySelector("#new-yes").onclick=()=>{ const last=match.p1Name; try{ localStorage.setItem("mc_prev", JSON.stringify(match)); }catch(x){} match=null; save(); closeSheet(); $("p2name").value=""; $("p1name").value=""; try{ localStorage.setItem("mc_lastp1", last); }catch(e){} const b=$("p1last"); if(last){ b.textContent="Use "+last; b.hidden=false; b.onclick=()=>{ $("p1name").value=last; b.hidden=true; }; } show("s-setup"); showRestore(); }; });
+  sheet(`<h2>Start a new match?</h2><p style="margin:0;color:var(--muted)">This match is not saved. Copy the report first if you need it.</p><button class="big primary" id="new-yes">New match</button>`, el=>{ el.querySelector("#new-yes").onclick=()=>{ const last=match.p1Name; try{ localStorage.setItem("mc_prev", JSON.stringify(match)); }catch(x){} match=null; save(); closeSheet(); $("p2name").value=""; $("p1name").value=""; $("p1utr").value=""; $("p2utr").value=""; try{ localStorage.setItem("mc_lastp1", last); }catch(e){} const b=$("p1last"); if(last){ b.textContent="Use "+last; b.hidden=false; b.onclick=()=>{ $("p1name").value=last; b.hidden=true; }; } show("s-setup"); showRestore(); }; });
 };
 
 function showRestore(){ let prev=null; try{ prev=JSON.parse(localStorage.getItem("mc_prev")||"null"); }catch(x){} const b=$("btn-restore"); if(prev&&prev.events){ b.hidden=false; b.textContent=`↩ Reopen last match (${prev.p1Name} vs ${prev.p2Name})`; b.onclick=()=>{ match=prev; try{ localStorage.removeItem("mc_prev"); }catch(x){} save(); b.hidden=true; if(match.ended||compute(match).over) openSummary(); else { show("s-live"); render(); } }; } else b.hidden=true; }
