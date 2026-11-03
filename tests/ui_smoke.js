@@ -5,8 +5,8 @@ fs.mkdirSync(OUT,{recursive:true});
 (async()=>{
   const html=fs.readFileSync(__dirname+'/../www/index.html','utf8').replace(/<link rel="stylesheet" href="https:\/\/fonts[^>]*>/,'');
   const browser=await chromium.launch(); const errors=[];
-  for(const theme of ['dark','light','sun']){
-    const ctx=await browser.newContext({viewport:{width:375,height:740},deviceScaleFactor:2,isMobile:true,hasTouch:true,colorScheme:theme==='dark'?'dark':'light'});
+  for(const theme of ['broadcast','sun']){
+    const ctx=await browser.newContext({viewport:{width:375,height:740},deviceScaleFactor:2,isMobile:true,hasTouch:true,colorScheme:'dark'});
     const page=await ctx.newPage(); page.on('pageerror',e=>errors.push(theme+': '+e.message));
     await page.setContent(html,{waitUntil:'load'});
     if(theme==='sun') await page.click('#btn-sun-setup');
