@@ -100,6 +100,7 @@ h2{font-size:24px}
 .seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:3px}
 .seg button{flex:1;min-height:42px;border-radius:8px;font-weight:600;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.footlink{align-self:center;font-size:13px;color:var(--muted);padding:8px 10px;text-align:center}
 .namerow{display:flex;gap:8px}
 .namerow input:first-child{flex:1;min-width:0}
 .court input.utr{width:78px;flex:none;text-align:center;font-family:var(--display);font-weight:700;font-size:20px}
@@ -148,7 +149,7 @@ h2{font-size:24px}
 @keyframes won{0%{transform:scale(1.18);filter:brightness(1.5)}100%{transform:scale(1);filter:none}}
 @media (prefers-reduced-motion:reduce){.board .who.won span,.board .pt.won,.board .odds.bump{animation:none}.board .wpbar i{transition:none}}
 .board .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border-top:1px solid var(--line)}
-.board .bigpt{background:var(--bad);color:#fff;font-family:var(--display);font-size:16px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 12px;border-radius:6px;transform:skewX(-8deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;animation:pulse 1.4s ease-in-out infinite}
+.board .bigpt{flex:0 1 auto;background:var(--bad);color:#fff;font-family:var(--display);font-size:16px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 12px;border-radius:6px;transform:skewX(-8deg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;animation:pulse 1.4s ease-in-out infinite}
 .board .bigpt.sp{background:var(--warn);color:#1A0E00}
 .board .bigpt.mp{background:var(--mp)}
 @keyframes pulse{50%{filter:brightness(1.18)}}
@@ -284,6 +285,7 @@ textarea#report{width:100%;min-height:160px;font:13px/1.4 ui-monospace,Menlo,mon
       <button id="f-oddsoff" aria-pressed="false">Live odds off</button>
     </div>
   </div>
+  <button class="footlink" id="btn-privacy">Free · No account · Nothing leaves your phone · <u>Privacy policy</u></button>
 </section>
 
 <!-- LIVE -->
@@ -300,7 +302,7 @@ textarea#report{width:100%;min-height:160px;font:13px/1.4 ui-monospace,Menlo,mon
     </div>
     <div class="wpbar" id="b-olabel" hidden aria-hidden="true"><i id="b-obar1" style="width:50%"></i><i id="b-obar2" style="width:50%"></i></div>
     <div class="foot"><span class="bigpt" id="b-bigpt" hidden></span><span class="noutr" id="b-noutr" hidden>No UTR · odds start 50/50</span>
-    <span class="pencil" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Tap to fix score</span></div>
+    <span class="pencil" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Fix score</span></div>
   </div>
 
   <div class="stage" id="stage"></div>
@@ -740,6 +742,15 @@ function startMatch(p1,p2,first){
   ui.step="serve"; ui.chips=false; closeSheet(); save(); show("s-live"); render();
 }
 
+/* ---- Privacy policy (bundled, works offline) ---- */
+$("btn-privacy").onclick=()=>sheet(`<h2>Privacy policy</h2>
+  <p style="margin:0;color:var(--muted);font-size:14px">Effective November 4, 2026 · BaselineBook LLC</p>
+  <p style="margin:0"><b>What we collect: nothing.</b> TennisChart has no accounts, no login, and no servers. Everything you enter (player names, UTRs, scores, notes) stays on your device.</p>
+  <p style="margin:0">We don't send your data anywhere, don't use analytics or tracking, don't show ads, and don't sell or share anything.</p>
+  <p style="margin:0"><b>Live odds</b> are calculated on your phone. Nothing is looked up online.</p>
+  <p style="margin:0"><b>Copy stats</b> creates an image on your device and puts it on your clipboard. Where you paste it is up to you.</p>
+  <p style="margin:0"><b>Children:</b> TennisChart does not knowingly collect information from anyone, including children under 13.</p>
+  <p style="margin:0;color:var(--muted);font-size:14px">Questions: support@baselinebook.com<br>Online copy: alexsterin2005-wq.github.io/tennischart/privacy.html</p>`);
 /* ---- Sheets ---- */
 function sheet(html, bind){ const r=$("sheetroot"); r.innerHTML=`<div class="sheet" id="sheet"><div class="panel">${html}<button class="big close" id="sheet-close" style="font-size:18px;min-height:50px">Close</button></div></div>`;
   const panel=r.querySelector(".panel"); r.querySelector("#sheet").onclick=e=>{ if(e.target.id==="sheet") closeSheet(); }; r.querySelector("#sheet-close").onclick=closeSheet; if(bind) bind(panel); }
