@@ -12,9 +12,10 @@ Live win chance and a whole new look.
 • Live win chance: add both players' UTR and see each player's chance to win, updated after every point. Green for the leader, red for the trailer. Turn it off anytime.
 • New broadcast-style scoreboard with sets, games, points and a win-chance bar.
 • Player names now show in their own color everywhere.
+• The server's button now glows with a "Serving" tag on the Who won screen.
 • Bolder, easier-to-read design, plus an improved Sun mode for bright courts.
 • Privacy policy is now inside the app.
-• Smaller fixes: name and UTR fields are tidier, and the Back to scoring button is easier to spot.
+• Smaller fixes: typing names no longer jumps the screen, name and UTR fields are tidier, and the Back to scoring button is easier to spot.
 
 Still 100% free. No account. Nothing leaves your phone.
 
