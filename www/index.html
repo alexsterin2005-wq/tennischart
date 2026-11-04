@@ -72,6 +72,8 @@ h2{font-size:24px}
 .big:active{transform:scale(.97)}
 .primary{background:var(--accent);color:var(--accent-ink);box-shadow:var(--glow)}
 .ghost{background:var(--surface);border:1.5px solid var(--line)}
+.backbtn{background:var(--fg);color:var(--bg);box-shadow:0 0 0 3px rgba(255,255,255,.12)}
+:root.sun .backbtn{box-shadow:none}
 .action{background:var(--surface2);border:1.5px solid var(--line);color:var(--fg)}
 .action:active{border-color:var(--accent)}
 .action:active,.primary:active,.me-btn:active,.opp-btn:active{filter:brightness(.88)}
@@ -255,12 +257,12 @@ textarea#report{width:100%;min-height:160px;font:13px/1.4 ui-monospace,Menlo,mon
   <div class="court" aria-label="Court">
     <div class="side">
       <label for="p2name">Opponent</label>
-      <div class="namerow"><input id="p2name" placeholder="Opponent name" autocomplete="off"><input id="p2utr" class="utr" placeholder="UTR" inputmode="decimal" autocomplete="off" aria-label="Opponent UTR, optional"></div>
+      <div class="namerow"><input id="p2name" placeholder="Opponent name" autocomplete="off" maxlength="50"><input id="p2utr" class="utr" placeholder="UTR" inputmode="decimal" maxlength="5" autocomplete="off" aria-label="Opponent UTR, optional"></div>
     </div>
     <div class="net"></div>
     <div class="side">
       <label for="p1name">Your player</label>
-      <div class="namerow"><input id="p1name" placeholder="Your player's name" autocomplete="off"><input id="p1utr" class="utr" placeholder="UTR" inputmode="decimal" autocomplete="off" aria-label="Your player UTR, optional"></div>
+      <div class="namerow"><input id="p1name" placeholder="Your player's name" autocomplete="off" maxlength="50"><input id="p1utr" class="utr" placeholder="UTR" inputmode="decimal" maxlength="5" autocomplete="off" aria-label="Your player UTR, optional"></div>
       <button id="p1last" class="chips" hidden style="align-self:flex-start;background:rgba(255,255,255,.2);color:#fff;border-radius:999px;padding:6px 12px;font-weight:600;font-size:14px"></button>
     </div>
     <div class="utrnote" id="utr-note" role="note"><span class="ic" aria-hidden="true">%</span><span id="utr-note-t"><b>Want live win odds?</b> Add both players' UTR. Optional, you can skip it.</span></div>
@@ -593,7 +595,7 @@ function wpGet(pa,pb,cfg){
   if(!m){ if(wpCache.size>400) wpCache.clear(); m=wpModel(ra, rb, cfg); wpCache.set(k,m); }
   return m;
 }
-function wpUtr(v){ const n=parseFloat(v); return (isFinite(n)&&n>=1&&n<=16.5) ? n : null; }
+function wpUtr(v){ const n=parseFloat(v); return (isFinite(n)&&n>=1&&n<=16.5) ? Math.round(n*100)/100 : null; }
 const wpStartCache = new Map();
 function startingServe(match){
   const u1=wpUtr(match.p1Utr), u2=wpUtr(match.p2Utr), cfg=match.config;
@@ -707,7 +709,7 @@ function renderOdds(st){
     const w1=$("b-obar1"), w2=$("b-obar2"); if(w1&&w2){ w1.style.width=a+"%"; w2.style.width=b+"%"; }
   }catch(e){ o1.hidden=o2.hidden=true; const l=$("b-olabel"); if(l) l.hidden=true; }
 }
-$("p1last").addEventListener("click", ()=>{ try{ const u=localStorage.getItem("mc_lastp1utr"); if(u) $("p1utr").value=u; }catch(e){} });
+$("p1last").addEventListener("click", ()=>{ try{ const u=localStorage.getItem("mc_lastp1utr"); if(u) $("p1utr").value=u; utrNote(); }catch(e){} });
 
 /* ---- Setup ---- */
 function utrNote(){ try{ const n=$("utr-note"), t=$("utr-note-t"); const a=wpUtr($("p1utr").value)!==null, b=wpUtr($("p2utr").value)!==null;
@@ -715,13 +717,15 @@ function utrNote(){ try{ const n=$("utr-note"), t=$("utr-note-t"); const a=wpUtr
   t.innerHTML = a&&b ? "<b>Live odds ready.</b> They start from the UTRs and update every point."
     : (a||b) ? "<b>Almost there.</b> Add the other player's UTR too for live odds. Optional."
     : "<b>Want live win odds?</b> Add both players' UTR. Optional, you can skip it."; }catch(e){} }
-["p1utr","p2utr"].forEach(id=>$(id).addEventListener("input",utrNote));
+// UTR field: digits and one decimal point, at most 2 decimals (e.g. 10.65), max 16.5
+function cleanUtr(el){ let v=el.value.replace(/,/g,".").replace(/[^0-9.]/g,""); const i=v.indexOf("."); if(i>=0) v=v.slice(0,i+1)+v.slice(i+1).replace(/\./g,"").slice(0,2); if(i<0) v=v.slice(0,2); if(parseFloat(v)>16.5) v="16.5"; if(v!==el.value) el.value=v; }
+["p1utr","p2utr"].forEach(id=>$(id).addEventListener("input",()=>{ cleanUtr($(id)); utrNote(); }));
 let fmt={scoring:"ad",thirdSet:"match_tiebreak_10"};
 function seg(a,b,key,va,vb){ $(a).onclick=()=>{fmt[key]=va;$(a).setAttribute("aria-pressed","true");$(b).setAttribute("aria-pressed","false");}; $(b).onclick=()=>{fmt[key]=vb;$(b).setAttribute("aria-pressed","true");$(a).setAttribute("aria-pressed","false");}; }
 ["p1name","p2name"].forEach(id=>{ $(id).addEventListener("focus",()=>setTimeout(()=>$("btn-start").scrollIntoView({block:"center"}),350)); $(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); if(id==="p2name") $("p1name").focus(); else $(id).blur(); } }); $(id).setAttribute("enterkeyhint", id==="p2name"?"next":"done"); });
 seg("f-ad","f-noad","scoring","ad","no_ad"); seg("f-mtb","f-full","thirdSet","match_tiebreak_10","full_set");
 $("btn-start").onclick=()=>{
-  const p1=$("p1name").value.trim()||"My player", p2=$("p2name").value.trim()||"Opponent";
+  const p1=$("p1name").value.trim().slice(0,50)||"My player", p2=$("p2name").value.trim().slice(0,50)||"Opponent";
   sheet(`<h2>Who serves first?</h2>
     <button class="big primary" id="sf-p1">${esc(p1)}</button>
     <button class="big ghost" id="sf-p2">${esc(p2)}</button>`, el=>{
@@ -981,7 +985,7 @@ function renderSummary(){
   $("summary").innerHTML=`
     <div class="final"><div class="n">${esc(match.p1Name)}</div><div class="s" style="grid-row:1/3;align-self:center">${setScore}${live}</div><div class="n">${esc(match.p2Name)}</div>
       <div class="w" style="grid-column:1/-1">${st.over?`${esc(name(st.winner))} wins`:match.ended?"Ended early":"Match in progress"} · ${match.config.scoring==="ad"?"Ad":"No-ad"} · ${match.config.thirdSet==="full_set"?"Full 3rd set":"10-pt match TB"}</div></div>
-    ${!st.over&&!match.ended?`<div class="row"><button class="big primary" id="back-live" style="font-size:20px">← Back to scoring</button><button class="big close" id="end-match" style="font-size:20px">End match</button></div>`:""}
+    ${!st.over&&!match.ended?`<div class="row"><button class="big backbtn" id="back-live" style="font-size:20px">← Back to scoring</button><button class="big close" id="end-match" style="font-size:20px">End match</button></div>`:""}
     <div class="tabs" id="tabs">${tabs}</div>
     <div><h2>Match stats</h2></div>
     ${stats}
