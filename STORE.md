@@ -1,15 +1,15 @@
 # App Store listing — TennisChart: Match Stats (version 1.1)
 
 **Name:** TennisChart: Match Stats (unchanged)
-**Subtitle (30):** Junior match stats & live odds
+**Subtitle (29):** Match stats & live win chance
 
 **Promotional text (170):**
-New in 1.1: live win odds that update every point, and a bold new broadcast look. Still free, no account, and nothing leaves your phone.
+New in 1.1: a live chance to win that updates every point, and a bold new broadcast look. Still free, no account, and nothing leaves your phone.
 
 **What's New in This Version:**
-Live win odds and a whole new look.
+Live win chance and a whole new look.
 
-• Live win odds: add both players' UTR and see each player's chance to win, updated after every point. Green for the leader, red for the trailer. Turn it off anytime.
+• Live win chance: add both players' UTR and see each player's chance to win, updated after every point. Green for the leader, red for the trailer. Turn it off anytime.
 • New broadcast-style scoreboard with sets, games, points and a win-chance bar.
 • Player names now show in their own color everywhere.
 • Bolder, easier-to-read design, plus an improved Sun mode for bright courts.
@@ -19,18 +19,18 @@ Live win odds and a whole new look.
 Still 100% free. No account. Nothing leaves your phone.
 
 **Description:**
-TennisChart is the match charting app for tennis parents who aren't coaches. Tap along from the sideline, watch live win odds move with every point, and send the coach a pro-style stat sheet.
+TennisChart is the match charting app for tennis parents who aren't coaches. Tap along from the sideline, watch each player's chance to win move with every point, and send the coach a pro-style stat sheet.
 
 Three taps a point: serve in or fault, who won, how. Tap the wrong thing? Undo. Ball rolled on? Replay. Lost track of the score? Tap the scoreboard and fix it. You'll never get stuck.
 
-LIVE WIN ODDS
+LIVE WIN CHANCE
 Add both players' UTR before the match and TennisChart shows each player's chance to win, updated after every point. Big points like break points move it more than early points. It runs entirely on your phone. Prefer not to see it? Turn it off in one tap.
 
 PRO-LEVEL STATS
 First serve percentage, points won on first and second serve, break points saved and converted, winners and errors by shot, rally length, and key moments. Filter by set. Tap Copy stats and paste a clean image straight into a text to the coach.
 
 WHAT YOU GET
-• Live win odds from UTR, updated every point (optional)
+• Live chance to win from UTR, updated every point (optional)
 • Broadcast-style scoreboard with break point, set point and match point alerts
 • Three taps per point, big thumb-friendly buttons
 • Undo any serve or point, replay a point, fix the score, add a let
@@ -43,8 +43,8 @@ WHAT YOU GET
 
 Made by a D1 tennis player and coach for the parents on the sideline.
 
-**Keywords (95/100):**
-tennis,match,stats,chart,score,tracker,parent,junior,coach,utr,win,odds,probability,scorekeeper
+**Keywords (97/100):**
+tennis,match,stats,chart,score,tracker,parent,junior,coach,utr,win,chance,probability,scorekeeper
 
 **Support URL:** https://baselinebook.com
 **Privacy Policy URL:** https://alexsterin2005-wq.github.io/tennischart/privacy.html

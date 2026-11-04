@@ -5,7 +5,7 @@ const F=n=>'data:font/woff2;base64,'+fs.readFileSync(path.resolve(__dirname,'../
 const img=n=>'data:image/png;base64,'+fs.readFileSync(RAW+'/'+n).toString('base64');
 const ipad=W>1500;
 const frames=[
- ['01','live.png','Live win odds','Every point updates the chance to win. Green leads, red trails.'],
+ ['01','live.png','Live win chance','Updates after every point. Green leads, red trails.'],
  ['02','who.png','Three taps a point','Serve in or fault. Who won. How. Big buttons, made for the sideline.'],
  ['03','stats.png','Pro-level stats','First serve %, break points, winners and errors, by set.'],
  ['04','report.png','Text it to the coach','One tap turns the match into a clean stat sheet image.'],
