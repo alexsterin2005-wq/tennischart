@@ -724,7 +724,11 @@ function cleanUtr(el){ let v=el.value.replace(/,/g,".").replace(/[^0-9.]/g,""); 
 ["p1utr","p2utr"].forEach(id=>$(id).addEventListener("input",()=>{ cleanUtr($(id)); utrNote(); }));
 let fmt={scoring:"ad",thirdSet:"match_tiebreak_10"};
 function seg(a,b,key,va,vb){ $(a).onclick=()=>{fmt[key]=va;$(a).setAttribute("aria-pressed","true");$(b).setAttribute("aria-pressed","false");}; $(b).onclick=()=>{fmt[key]=vb;$(b).setAttribute("aria-pressed","true");$(a).setAttribute("aria-pressed","false");}; }
-["p1name","p2name"].forEach(id=>{ $(id).addEventListener("focus",()=>setTimeout(()=>$("btn-start").scrollIntoView({block:"center"}),350)); $(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); if(id==="p2name") $("p1name").focus(); else $(id).blur(); } }); $(id).setAttribute("enterkeyhint", id==="p2name"?"next":"done"); });
+// Keep the box being typed in visible above the keyboard (only scroll if it is hidden).
+function keepVisible(el){ setTimeout(()=>{ try{ const vv=window.visualViewport, h=vv?vv.height:window.innerHeight, top=vv?vv.offsetTop:0, r=el.getBoundingClientRect();
+  if(r.top<top+60 || r.bottom>top+h-24) el.scrollIntoView({block:"center",behavior:"smooth"}); }catch(x){} }, 380); }
+["p1name","p2name","p1utr","p2utr"].forEach(id=>$(id).addEventListener("focus",()=>keepVisible($(id))));
+["p1name","p2name"].forEach(id=>{  $(id).addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); if(id==="p2name") $("p1name").focus(); else $(id).blur(); } }); $(id).setAttribute("enterkeyhint", id==="p2name"?"next":"done"); });
 seg("f-ad","f-noad","scoring","ad","no_ad"); seg("f-mtb","f-full","thirdSet","match_tiebreak_10","full_set");
 $("btn-start").onclick=()=>{
   const p1=$("p1name").value.trim().slice(0,50)||"My player", p2=$("p2name").value.trim().slice(0,50)||"Opponent";
