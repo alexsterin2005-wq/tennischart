@@ -20,7 +20,7 @@ Reference math (Python, verified numbers below): `docs/win_probability_reference
 ## Constants (tunable, keep in one object)
 ```ts
 const WP = {
-  utrScale: 2,        // Win% = 1 / (1 + 10^(-gap/utrScale))
+  utrScale: 1.5,      // Win% = 1 / (1 + 10^(-gap/utrScale)); was 2 (see UTR curve calibration)
   gapCap: 2.5,        // |gap| clamped to this
   baseServe: 0.60,    // generic junior serve-point win rate
   priorWeight: 80,    // UTR guess counts as this many serve points (backtested: best of 20–160)
@@ -99,3 +99,12 @@ Data: Match Charting Project (Jeff Sackmann), 2020s best-of-three, 982 men's + 9
 | 120 | 0.1661 | 0.1604 |
 
 Calibration at 80: actual win rate within ~1–3 pts of predicted in every 10% bucket; consistent ~2 pt under-prediction for Player 1 (P1 wins 51–54% in this dataset) = the missing pre-match rating. Pro serve-point rates: men 0.645, women 0.572 → split `baseServe` by gender once junior data exists.
+
+## UTR curve calibration (2026-11-03)
+Pre-match Kalshi prices for 223 ITF/Challenger/WTA 125 matches, joined to both players' UTRs (148 matches with exact UTRs on both sides).
+- Best-fit utrScale = 1.35 (95% bootstrap range 1.24-1.44). Original 2.0 is outside that range: it underrates favorites.
+- Almost the same at every level: avg UTR under 10.5 -> 1.30, 10.5-12 -> 1.23, 12-13 -> 1.37, 13+ -> 1.44.
+- Market win % for the higher UTR: gap 0-0.5 -> 60%, 0.5-1 -> 78%, 1-2 -> 87%.
+- Chosen: 1.5 (near-identical fit, small margin toward upsets because juniors may be more random than adult ITF players).
+- With 1.5: gap 0.5 -> 68%, 1.0 -> 82%, 2.0 -> 95%. The reference numbers above were computed with 2.0; tests pin 2.0 for those checks.
+- Open: no junior markets exist; confirm with real junior results from UTR profiles.

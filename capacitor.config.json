@@ -4,11 +4,11 @@
   "webDir": "www",
   "ios": {
     "contentInset": "never",
-    "backgroundColor": "#f4f6f9",
+    "backgroundColor": "#0D0F12",
     "preferredContentMode": "mobile"
   },
   "plugins": {
-    "SplashScreen": { "launchShowDuration": 800, "backgroundColor": "#1a56a0", "launchAutoHide": true },
-    "StatusBar": { "style": "DEFAULT" }
+    "SplashScreen": { "launchShowDuration": 800, "backgroundColor": "#0D0F12", "launchAutoHide": true },
+    "StatusBar": { "style": "DARK" }
   }
 }
