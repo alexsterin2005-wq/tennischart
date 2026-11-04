@@ -81,6 +81,16 @@ h2{font-size:24px}
 .close{background:transparent;border:1.5px solid var(--line);color:var(--muted)}
 .close:active{background:var(--surface2)}
 #end-yes.close{border-color:var(--bad);color:var(--bad)}
+/* Who-won: highlight the server's button (buttons never move) */
+.stage>.row #w-p1,.stage>.row #w-p2{position:relative;padding-top:clamp(30px,6vh,44px);padding-bottom:clamp(30px,6vh,44px)}
+.stage>.row .wn{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;max-width:100%}
+.big.srv{box-shadow:0 0 0 3px var(--ball),0 0 26px rgba(230,255,59,.32)}
+.srvtag{position:absolute;top:clamp(8px,1.8vh,14px);left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-size:clamp(12px,3.4vw,15px);font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:rgba(0,0,0,.3);color:#fff;padding:4px 10px 4px 8px;border-radius:999px;line-height:1.2;flex:none;white-space:nowrap}
+.srvtag i{width:clamp(10px,2.8vw,13px);height:clamp(10px,2.8vw,13px);border-radius:50%;background:var(--ball);box-shadow:0 0 10px var(--ball);flex:none}
+:root.sun .big.srv{box-shadow:0 0 0 4px #000}
+:root.sun .srvtag{background:rgba(0,0,0,.55)}
+@media (max-height:640px){.srvtag{font-size:11px;padding:3px 8px}}
+@media (prefers-reduced-motion:no-preference){.big.srv{transition:box-shadow .25s}}
 .ball-btn{background:var(--ball);color:#1b2a10}
 .me-btn{background:var(--me);color:var(--me-ink)}
 .opp-btn{background:var(--opp);color:var(--opp-ink)}
@@ -816,8 +826,8 @@ function render(){
   } else if (ui.step==="serve" || ui.step==="who"){
     ui.step="who";
     stage.innerHTML=`<div class="servelabel">Who won the point?</div>
-      <div class="row"><button class="big me-btn" id="w-p1">${esc(match.p1Name)}</button>
-      <button class="big opp-btn" id="w-p2">${esc(match.p2Name)}</button></div>`;
+      <div class="row"><button class="big me-btn ${st.curServer==="p1"?"srv":""}" id="w-p1">${st.curServer==="p1"?'<span class="srvtag" aria-label="serving"><i></i>Serving</span>':''}<span class="wn">${esc(match.p1Name)}</span></button>
+      <button class="big opp-btn ${st.curServer==="p2"?"srv":""}" id="w-p2">${st.curServer==="p2"?'<span class="srvtag" aria-label="serving"><i></i>Serving</span>':''}<span class="wn">${esc(match.p2Name)}</span></button></div>`;
     stage.querySelector("#w-p1").onclick=()=>{ui.pendingWinner="p1";ui.step="how";render();};
     stage.querySelector("#w-p2").onclick=()=>{ui.pendingWinner="p2";ui.step="how";render();};
   } else if (ui.step==="how"){
