@@ -1,4 +1,4 @@
-# App Store listing — TennisChart: Match Stats (version 1.1)
+# App Store listing — TennisChart.io (version 1.1, submitted Nov 5, 2026, build 11)
 
 **Name:** TennisChart.io (was "TennisChart: Match Stats"; change on the App Information page)
 **Home-screen name:** TennisChart (unchanged; "TennisChart.io" would be cut off under the icon)
@@ -21,12 +21,12 @@ Live win chance and a whole new look.
 Still 100% free. No account. Nothing leaves your phone.
 
 **Description:**
-TennisChart is the match charting app for tennis parents who aren't coaches. Tap along from the sideline, watch each player's chance to win move with every point, and send the coach a pro-style stat sheet.
+TennisChart.io is the match charting app for tennis parents who aren't coaches. Tap along from the sideline, watch each player's chance to win move with every point, and send the coach a pro-style stat sheet.
 
 Three taps a point: serve in or fault, who won, how. Tap the wrong thing? Undo. Ball rolled on? Replay. Lost track of the score? Tap the scoreboard and fix it. You'll never get stuck.
 
 LIVE WIN CHANCE
-Add both players' UTR before the match and TennisChart shows each player's chance to win, updated after every point. Big points like break points move it more than early points. It runs entirely on your phone. Prefer not to see it? Turn it off in one tap.
+Add both players' UTR before the match and TennisChart.io shows each player's chance to win, updated after every point. Big points like break points move it more than early points. It runs entirely on your phone. Prefer not to see it? Turn it off in one tap.
 
 PRO-LEVEL STATS
 First serve percentage, points won on first and second serve, break points saved and converted, winners and errors by shot, rally length, and key moments. Filter by set. Tap Copy stats and paste a clean image straight into a text to the coach.
