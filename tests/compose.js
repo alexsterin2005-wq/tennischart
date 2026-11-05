@@ -8,13 +8,13 @@ const frames=[
  ['01','live.png','Live win chance','Updates after every point. Green leads, red trails.'],
  ['02','who.png','Three taps a point','Serve in or fault. Who won. How. Big buttons, made for the sideline.'],
  ['03','stats.png','Pro-level stats','First serve %, break points, winners and errors, by set.'],
- ['04','report.png','Text it to the coach','One tap turns the match into a clean stat sheet image.'],
+ ['04','report_crop.png','Text it to the coach','One tap turns the match into a clean stat sheet image.'],
  ['05','setup.png','Free. No account.','Nothing leaves your phone. Add UTRs for odds, or skip them.'],
  ['06','live_sun.png','Sun mode','High-contrast mode for bright courts.'],
 ];
 (async()=>{ const b=await chromium.launch(); const p=await (await b.newContext({viewport:{width:W,height:H},deviceScaleFactor:1})).newPage();
- for(const [n,file,head,sub] of frames){ if(ipad && (file==='report.png')) continue;
-  const isReport=file==='report.png';
+ for(const [n,file,head,sub] of frames){ if(ipad && file.startsWith('report')) continue;
+  const isReport=file.startsWith('report');
   const html=`<!doctype html><html><head><style>
   @font-face{font-family:D;font-weight:800;src:url(${F('barlow-condensed-latin-800-normal.woff2')})}
   @font-face{font-family:B;font-weight:500;src:url(${F('barlow-latin-500-normal.woff2')})}
@@ -27,7 +27,7 @@ const frames=[
   .ph img{display:block;width:100%}
   .stripe{position:absolute;left:0;right:0;top:0;height:14px;background:#FF6B1A}
   </style></head><body><div class="stripe"></div><div class="t"><h1>${head.replace(/^(\S+)/,'<span>$1</span>')}</h1><p>${sub}</p></div>
-  <div class="ph"${isReport?' style="border-radius:28px"':''}><img src="${img(file)}"></div></body></html>`;
+  <div class="ph"${isReport?' style="border-radius:28px;width:'+(ipad?1500:1200)+'px"':''}><img src="${img(file)}"></div></body></html>`;
   await p.setContent(html); await p.evaluate(()=>document.fonts.ready); await p.waitForTimeout(150);
   await p.screenshot({path:`${OUT}/${n}.png`}); }
  await b.close(); })();
