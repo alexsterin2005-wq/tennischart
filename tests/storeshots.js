@@ -4,7 +4,7 @@ const [OUT,W,H,DPR]=[process.argv[2],+process.argv[3],+process.argv[4],+process.
 (async()=>{ const b=await chromium.launch(); const p=await (await b.newContext({viewport:{width:W,height:H},deviceScaleFactor:DPR,isMobile:W<700,hasTouch:true})).newPage();
  const errs=[]; p.on('pageerror',e=>errs.push(e.message));
  await p.goto('file://'+path.resolve(__dirname,'../www/index.html')); await p.evaluate(()=>localStorage.clear()); await p.reload(); await p.evaluate(()=>document.fonts.ready);
- await p.fill('#p2name','Lucas Moreno'); await p.fill('#p2utr','10.25'); await p.fill('#p1name','Ethan Park'); await p.fill('#p1utr','10.65'); await p.evaluate(()=>document.activeElement.blur());
+ await p.fill('#p2name','Aaron'); await p.fill('#p2utr','10.25'); await p.fill('#p1name','Alex'); await p.fill('#p1utr','10.65'); await p.evaluate(()=>document.activeElement.blur());
  await p.screenshot({path:OUT+'/setup.png'});
  await p.click('#btn-start'); await p.waitForTimeout(300); await p.click('#sf-p1'); await p.waitForTimeout(300);
  // scripted match: Ethan wins set 1 6-4, set 2 at 4-4, Lucas serving 30-40 (break point Ethan)
