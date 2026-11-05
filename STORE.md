@@ -1,6 +1,7 @@
 # App Store listing — TennisChart: Match Stats (version 1.1)
 
-**Name:** TennisChart: Match Stats (unchanged)
+**Name:** TennisChart.io (was "TennisChart: Match Stats"; change on the App Information page)
+**Home-screen name:** TennisChart (unchanged; "TennisChart.io" would be cut off under the icon)
 **Subtitle (29):** Match stats & live win chance
 
 **Promotional text (170):**
