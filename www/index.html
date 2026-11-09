@@ -535,7 +535,9 @@ function computeStats(match, st, setFilter){
 }
 
 /* ================= WINPROB (reads engine state only; never changes it) ================= */
-const WP = { utrScale: 1.5, gapCap: 2.5, baseServe: 0.60, priorWeight: 80 };
+const WP = { utrScale: 1.5, gapCap: 2.5, baseServe: 0.60, priorWeight: 80, rampStart: 600, rampStep: 10 };
+// Learning ramp: early in the match the UTR guess counts as rampStart points of evidence, dropping rampStep per point played,
+// down to priorWeight. One game barely moves the odds; by about 8 games in, the match itself carries full weight.
 function wpOther(p){ return p==="p1"?"p2":"p1"; }
 function wpModel(pa, pb, cfg){
   // pa = chance p1 wins a point on p1's serve, pb = chance p2 wins a point on p2's serve
@@ -632,8 +634,9 @@ function winProb(match, st, opts){
   if(!(opts&&opts.blend===false)){
     let w1=0,n1=0,w2=0,n2=0;
     for(const p of st.points){ if(p.server==="p1"){ n1++; if(p.winner==="p1") w1++; } else { n2++; if(p.winner==="p2") w2++; } }
-    pa=(WP.priorWeight*s0.pa+w1)/(WP.priorWeight+n1);
-    pb=(WP.priorWeight*s0.pb+w2)/(WP.priorWeight+n2);
+    const pw=Math.max(WP.priorWeight, WP.rampStart - WP.rampStep*(n1+n2));
+    pa=(pw*s0.pa+w1)/(pw+n1);
+    pb=(pw*s0.pb+w2)/(pw+n2);
   }
   pa=Math.min(0.9,Math.max(0.3,pa)); pb=Math.min(0.9,Math.max(0.3,pb));
   return wpGet(pa,pb,match.config).fromState(st);
