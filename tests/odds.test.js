@@ -24,7 +24,7 @@ near('4-4 30-40 break point for Alex', wp(c,false), 0.693, 0.02);
 let c1=JSON.parse(JSON.stringify(c)); pt(c1,'p1'); near('Alex converts -> 5-4', wp(c1,false), 0.781, 0.02);
 let c2=JSON.parse(JSON.stringify(c)); pt(c2,'p2'); near('Aaron saves -> deuce', wp(c2,false), 0.631, 0.02);
 // Step 4 blend: after 40 Alex serve points with 20 won, serve number 57.8%
-{ const W=E.WP.priorWeight; near('Blend 40 pts / 20 won', (W*s0.pa+20)/(W+40), 0.578, 0.002); }
+{ const W=80; near('Blend 40 pts / 20 won (spec W=80)', (W*s0.pa+20)/(W+40), 0.578, 0.002); }
 // Edge cases
 near('No UTRs -> 50/50', wp(mk('p1',null,null),true), 0.5, 0.0001);
 near('One UTR -> 50/50', wp(mk('p1',9,null),true), 0.5, 0.0001);

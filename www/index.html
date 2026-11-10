@@ -535,7 +535,7 @@ function computeStats(match, st, setFilter){
 }
 
 /* ================= WINPROB (reads engine state only; never changes it) ================= */
-const WP = { utrScale: 1.5, gapCap: 2.5, baseServe: 0.60, priorWeight: 80, rampStart: 600, rampStep: 10 };
+const WP = { utrScale: 1.5, gapCap: 2.5, baseServe: 0.60, priorWeight: 200, rampStart: 600, rampStep: 10 };
 // Learning ramp: early in the match the UTR guess counts as rampStart points of evidence, dropping rampStep per point played,
 // down to priorWeight. One game barely moves the odds; by about 8 games in, the match itself carries full weight.
 function wpOther(p){ return p==="p1"?"p2":"p1"; }
