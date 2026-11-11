@@ -85,3 +85,11 @@ None.
 6. REGULATED INDUSTRY / THIRD-PARTY MATERIAL
 Not applicable. No gambling or wagering: win odds are a statistic shown to the parent, nothing can be bet or purchased. "UTR" refers to the publicly visible Universal Tennis Rating number that the user types in by hand; the app does not connect to UTR.
 ```
+
+---
+# Version 1.1.1 (next)
+**What's New:**
+Smoother live win chance and a new icon.
+
+• Live win chance now moves more like the pro betting markets: calmer in the first games, bigger on breaks and sets that really matter.
+• New app icon and launch screen.
