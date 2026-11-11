@@ -23,7 +23,8 @@ const WP = {
   utrScale: 1.5,      // Win% = 1 / (1 + 10^(-gap/utrScale)); was 2 (see UTR curve calibration)
   gapCap: 2.5,        // |gap| clamped to this
   baseServe: 0.60,    // generic junior serve-point win rate
-  priorWeight: 80,    // UTR guess counts as this many serve points (backtested: best of 20–160)
+  priorWeight: 200,   // floor of the learning ramp (UTR guess never counts as fewer than 200 serve points)
+  rampStart: 600, rampStep: 10, // UTR guess starts at 600 serve points, drops 10 per point played, down to priorWeight
 };
 ```
 
@@ -108,3 +109,13 @@ Pre-match Kalshi prices for 223 ITF/Challenger/WTA 125 matches, joined to both p
 - Chosen: 1.5 (near-identical fit, small margin toward upsets because juniors may be more random than adult ITF players).
 - With 1.5: gap 0.5 -> 68%, 1.0 -> 82%, 2.0 -> 95%. The reference numbers above were computed with 2.0; tests pin 2.0 for those checks.
 - Open: no junior markets exist; confirm with real junior results from UTR profiles.
+
+## Live market check (Kalshi, Nov 9 2026)
+15 singles matches recorded point by point from 0-0 (about 1,900 points), with UTRs entered before each match.
+Average gap from Kalshi's price at every point (percentage points):
+- Old (priorWeight 80, no ramp): 5.6
+- Ramp 600 to 80: 4.9
+- **Ramp 600 to 200 (shipped): 4.0**
+Move per point vs Kalshi: first 2 games 4.5 vs 2.0 before, about 2.3 after. Breaks stay about 1.5x Kalshi in every setting, including no learning at all, so that comes from the scoring math (and thin, slow markets), not the learning weight.
+Tested and rejected: utrScale 1.25 / 1.0 (start gap 7.3 / 8.1 vs 7.4 at 1.5); baseServe 0.58 / 0.56 (smaller breaks but bigger holds, same overall gap).
+Pro backtest (Match Charting Project, log loss, lower is better): weight 80 = 0.4989, fixed 200 = 0.5006, ramp 600->80 = 0.5004. A tiny accuracy cost on final results in exchange for moving like the market.
